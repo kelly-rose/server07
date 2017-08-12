@@ -18,31 +18,23 @@ module.exports = app => {
         res.send('Thanks for voting!');
     });
 
-    /* https://tkfkdgodyzofflfhwm.localtunnel.me/api/surveys/webhooks */
+    /* section 12 - 180 */
     app.post('/api/surveys/webhooks', (req, res) => {
         console.log(req.body);
+        const p = new Path('/api/surveys/:surveyId/:choice');
 
-        //section 12 - 177
-        const events = _.map(req.body, ({email, url}) => {
-            const pathname = new URL(url).pathname;
-            console.log(pathname); ///api/surveys/598f0750d1f94004609c275e/yes
-            const p = new Path('/api/surveys/:surveyId/:choice');
-            console.log(p);
-            const match = p.test(pathname);
-            console.log(match); //{ surveyId: '598f07e690798a2e7cc09a16', choice: 'no' }
-            //section 12 - 178
-            if (match) {
-                return {email: email, surveyId: match.surveyId, choice: match.choice};
-            }
-        });
+        const events = _.chain(req.body)
+            .map(({email, url}) => {
+                const match = p.test(new URL(url).pathname);
+                if (match) {
+                    return {email, surveyId: match.surveyId, choice: match.choice};
+                }
+            })
+            .compact()
+            .uniqBy('email', 'surveyId')
+            .values();
 
-        console.log(events);  //[ { email: 'h.siri1205@gmail.com',surveyId: '598f08f07156d82cc8dbaa37',choice: 'yes' } ]
-
-        //section 12 - 179
-        const compactEvents = _.compact(events);
-        console.log(compactEvents);
-        const uniqueEvents = _.uniqBy(compactEvents,'email','surveyId');
-        console.log(uniqueEvents);
+        console.log(events);
 
         res.send({});
 
