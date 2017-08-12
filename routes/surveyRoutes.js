@@ -14,7 +14,7 @@ module.exports = app =>{
     });
 
     /* https://tkfkdgodyzofflfhwm.localtunnel.me/api/surveys/webhooks */
-    app.get('api/surveys/webhooks',(req,res)=>{
+    app.post('/api/surveys/webhooks',(req,res)=>{
        console.log(req.body);
        res.send({});
     });
