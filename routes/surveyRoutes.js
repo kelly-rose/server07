@@ -23,7 +23,7 @@ module.exports = app => {
         console.log(req.body);
 
         //section 12 - 177
-        const events = _.map(req.body, ({email,url}) => {
+        const events = _.map(req.body, ({email, url}) => {
             const pathname = new URL(url).pathname;
             console.log(pathname); ///api/surveys/598f0750d1f94004609c275e/yes
             const p = new Path('/api/surveys/:surveyId/:choice');
@@ -36,7 +36,16 @@ module.exports = app => {
             }
         });
 
-        console.log(events);
+        console.log(events);  //[ { email: 'h.siri1205@gmail.com',surveyId: '598f08f07156d82cc8dbaa37',choice: 'yes' } ]
+
+        //section 12 - 179
+        const compactEvents = _.compact(events);
+        console.log(compactEvents);
+        const uniqueEvents = _.uniqBy(compactEvents,'email','surveyId');
+        console.log(uniqueEvents);
+
+        res.send({});
+
     });
 
 
